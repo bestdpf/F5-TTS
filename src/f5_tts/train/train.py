@@ -40,8 +40,8 @@ grad_accumulation_steps = 1  # note: updates = steps / grad_accumulation_steps
 max_grad_norm = 1.0
 
 epochs = 11  # use linear decay, thus epochs control the slope
-num_warmup_updates = 20000  # warmup steps
-save_per_updates = 50000  # save checkpoint per steps
+num_warmup_updates = 10000  # warmup steps
+save_per_updates = 20000  # save checkpoint per steps
 last_per_steps = 5000  # save last checkpoint per steps
 
 # model params

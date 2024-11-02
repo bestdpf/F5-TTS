@@ -62,6 +62,8 @@ class Trainer:
             **accelerate_kwargs,
         )
 
+        print(f'gpu count {self.accelerator.num_processes}')
+
         self.logger = logger
         if self.logger == "wandb":
             if exists(wandb_resume_id):
