@@ -9,6 +9,7 @@ export TRANSFORMERS_OFFLINE=1
 
 export PATH=$PATH:/home/remote/u6554606/fb-project/bin
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/home/remote/u6554606/fb-project/lib:/home/projects/u6554606/llm/f5/lib/
+export PYTHONPATH=/home/projects/u6554606/llm/F5-TTS/src/third_party/BigVGAN
 
 
 python train.py > train.out 2>train.err&
