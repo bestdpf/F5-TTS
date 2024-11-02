@@ -23,7 +23,7 @@ mel_spec_type = "bigvgan"  # 'vocos' or 'bigvgan'
 
 tokenizer = "custom"  # 'pinyin', 'char', or 'custom'
 tokenizer_path = '/home/projects/u6554606/llm/split_phn_tokenizer'  # if tokenizer = 'custom', define the path to the tokenizer you want to use (should be vocab.txt)
-dataset_name = "/home/projects/u6554606/llm/multi_lang_mel"
+dataset_name = "/home/projects/u6554606/llm/multi_lang_mel_test"
 
 # -------------------------- Training Settings -------------------------- #
 
