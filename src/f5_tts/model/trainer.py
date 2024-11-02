@@ -343,7 +343,7 @@ class Trainer:
                                 sway_sampling_coef=sway_sampling_coef,
                             )
                         generated = generated.to(torch.float32)
-                        gen_audio = vocoder.decode(
+                        gen_audio = vocoder(
                             generated[:, ref_audio_len:, :].permute(0, 2, 1).to(self.accelerator.device)
                         )
                         torchaudio.save(
