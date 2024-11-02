@@ -298,9 +298,10 @@ def load_dataset(
                                              streaming=False,
                                              cache_dir=ds_cache_dir,
                                              num_proc=10).with_format('torch')
-        train_dataset.rename_column('texts', 'text')
-        train_dataset.rename_column('labels', 'mel_spec')
+        train_dataset = train_dataset.rename_column('texts', 'text')
+        train_dataset = train_dataset.rename_column('labels', 'mel_spec')
         train_dataset['mel_spec'] = train_dataset['mel_spec'].transpose(-1, -2)
+        del train_dataset['input_ids'], train_dataset['speaker_embeddings']
 
 
     return train_dataset
