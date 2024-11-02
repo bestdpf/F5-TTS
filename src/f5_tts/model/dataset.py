@@ -182,11 +182,18 @@ class DynamicBatchSampler(Sampler[list[int]]):
 
         print('shape of mel')
         print(data_source[0]['mel_spec'].shape)
-        for idx in tqdm(
-            self.sampler, desc="Sorting with sampler... if slow, check whether dataset is provided with duration"
-        ):
-            indices.append((idx, data_source[idx]['mel_spec'].shape[0]))
-        indices.sort(key=lambda elem: elem[1])
+
+
+        if os.path.exists('indices.json'):
+            indices = json.load(open('indices.json', 'r'))
+        else:
+            for idx in tqdm(
+                    self.sampler,
+                    desc="Sorting with sampler... if slow, check whether dataset is provided with duration"
+            ):
+                indices.append((idx, data_source[idx]['mel_spec'].shape[0]))
+            indices.sort(key=lambda elem: elem[1])
+            json.dump(indices, open('indices.json', 'w'))
 
         batch = []
         batch_frames = 0
