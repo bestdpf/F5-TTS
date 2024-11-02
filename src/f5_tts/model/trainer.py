@@ -149,6 +149,7 @@ class Trainer:
             not exists(self.checkpoint_path)
             or not os.path.exists(self.checkpoint_path)
             or not os.listdir(self.checkpoint_path)
+            or len([f for f in os.listdir(self.checkpoint_path) if f.endswith(".pt")]) == 0
         ):
             return 0
 
