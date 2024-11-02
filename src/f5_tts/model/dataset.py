@@ -300,7 +300,7 @@ def load_dataset(
                                              num_proc=10).with_format('torch')
         train_dataset = train_dataset.rename_column('texts', 'text')
         train_dataset = train_dataset.rename_column('labels', 'mel_spec')
-        train_dataset['mel_spec'] = train_dataset['mel_spec'].transpose(-1, -2)
+        # train_dataset['mel_spec'] = train_dataset['mel_spec'].transpose(-1, -2)
         del train_dataset['input_ids'], train_dataset['speaker_embeddings']
 
 
@@ -311,7 +311,7 @@ def load_dataset(
 
 
 def collate_fn(batch):
-    mel_specs = [item["mel_spec"].squeeze(0) for item in batch]
+    mel_specs = [item["mel_spec"].squeeze(0).transpose(-1, -2) for item in batch]
     mel_lengths = torch.LongTensor([spec.shape[-1] for spec in mel_specs])
     max_mel_length = mel_lengths.amax()
 
