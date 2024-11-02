@@ -12,6 +12,7 @@ export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/home/remote/u6554606/fb-project/lib:/ho
 export PYTHONPATH=/home/projects/u6554606/llm/F5-TTS/src/third_party/BigVGAN
 export PHONEMIZER_ESPEAK_LIBRARY=/home/remote/u6554606/fb-project/lib/libespeak-ng.so.1
 export TOKENIZERS_PARALLELISM=false
+export ACCELERATE_USE_DEEPSPEED=true
 
 
 python train.py > train.out 2>train.err&
