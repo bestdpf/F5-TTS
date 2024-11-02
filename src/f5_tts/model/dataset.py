@@ -301,7 +301,8 @@ def load_dataset(
         train_dataset = train_dataset.rename_column('texts', 'text')
         train_dataset = train_dataset.rename_column('labels', 'mel_spec')
         # train_dataset['mel_spec'] = train_dataset['mel_spec'].transpose(-1, -2)
-        del train_dataset['input_ids'], train_dataset['speaker_embeddings']
+        # del train_dataset['input_ids'], train_dataset['speaker_embeddings']
+        train_dataset.remove_columns(['input_ids', 'speaker_embeddings'])
 
 
     return train_dataset
