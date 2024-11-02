@@ -32,7 +32,7 @@ exp_name = "F5TTS_Base"  # F5TTS_Base | E2TTS_Base
 learning_rate = 7.5e-5
 
 # batch_size_per_gpu = 38400  # 8 GPUs, 8 * 38400 = 307200
-batch_size_per_gpu = 16  # 8 GPUs, 8 * 38400 = 307200
+batch_size_per_gpu = 8  # 8 GPUs, 8 * 38400 = 307200
 # batch_size_type = "frame"  # "frame" or "sample"
 batch_size_type = "sample"  # "frame" or "sample"
 max_samples = 64  # max sequences per batch if use frame-wise batch_size. we set 32 for small models, 64 for base models

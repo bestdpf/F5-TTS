@@ -123,7 +123,7 @@ class CFM(nn.Module):
                 lang_id, lang_locale = get_text_lang_locale(cur_text)
                 try:
                     phn = run_phn(cur_text, lang_locale)
-                    print(f'test phn {phn}')
+                    # print(f'test phn {phn}')
                 except Exception as e:
                     print(e)
                     print(f'error phn {cur_text} {lang_id} {lang_locale}')
@@ -250,7 +250,7 @@ class CFM(nn.Module):
                 lang_id, lang_locale = get_text_lang_locale(cur_text)
                 try:
                     phn = run_phn(cur_text, lang_locale)
-                    print(f'test phn {phn}')
+                    # print(f'test phn {phn}')
                 except Exception as e:
                     print(e)
                     print(f'error phn {cur_text} {lang_id} {lang_locale}')
