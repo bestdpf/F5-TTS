@@ -180,6 +180,8 @@ class DynamicBatchSampler(Sampler[list[int]]):
         indices, batches = [], []
         data_source = self.sampler.data_source
 
+        print('shape of mel')
+        print(data_source[0]['mel_spec'].shape)
         for idx in tqdm(
             self.sampler, desc="Sorting with sampler... if slow, check whether dataset is provided with duration"
         ):
