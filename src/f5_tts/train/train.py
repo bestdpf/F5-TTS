@@ -2,22 +2,28 @@
 
 from importlib.resources import files
 
+import torch
+
 from f5_tts.model import CFM, DiT, Trainer, UNetT
 from f5_tts.model.dataset import load_dataset
-from f5_tts.model.utils import get_tokenizer
+from f5_tts.model.token_utils import get_phn_tokenizer
 
 # -------------------------- Dataset Settings --------------------------- #
 
-target_sample_rate = 24000
-n_mel_channels = 100
-hop_length = 256
-win_length = 1024
+# target_sample_rate = 24000
+target_sample_rate = 16000
+# n_mel_channels = 100
+n_mel_channels = 80
+# hop_length = 256
+hop_length = 16
+# win_length = 1024
+win_length = 64
 n_fft = 1024
-mel_spec_type = "vocos"  # 'vocos' or 'bigvgan'
+mel_spec_type = "bigvgan"  # 'vocos' or 'bigvgan'
 
-tokenizer = "pinyin"  # 'pinyin', 'char', or 'custom'
-tokenizer_path = None  # if tokenizer = 'custom', define the path to the tokenizer you want to use (should be vocab.txt)
-dataset_name = "Emilia_ZH_EN"
+tokenizer = "custom"  # 'pinyin', 'char', or 'custom'
+tokenizer_path = '/home/projects/u6554606/llm/split_phn_tokenizer'  # if tokenizer = 'custom', define the path to the tokenizer you want to use (should be vocab.txt)
+dataset_name = "/home/projects/u6554606/llm/multi_lang_mel"
 
 # -------------------------- Training Settings -------------------------- #
 
@@ -51,11 +57,11 @@ elif exp_name == "E2TTS_Base":
 
 
 def main():
-    if tokenizer == "custom":
-        tokenizer_path = tokenizer_path
-    else:
-        tokenizer_path = dataset_name
-    vocab_char_map, vocab_size = get_tokenizer(tokenizer_path, tokenizer)
+
+    phn_tokenizer = get_phn_tokenizer('cuda' if torch.cuda.is_available() else 'cpu')
+
+    vocab_size = len(phn_tokenizer.get_vocab())
+    vocab_char_map = None
 
     mel_spec_kwargs = dict(
         n_fft=n_fft,

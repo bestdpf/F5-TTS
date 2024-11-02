@@ -199,7 +199,9 @@ class Trainer:
         if self.log_samples:
             from f5_tts.infer.utils_infer import cfg_strength, load_vocoder, nfe_step, sway_sampling_coef
 
-            vocoder = load_vocoder(vocoder_name=self.vocoder_name)
+            VOCODER_DIR = os.environ.get('VOCODER_DIR',
+                                               '/home/projects/u6554606/llm/bigvgan_v2_22khz_80band_fmax8k_256x/')
+            vocoder = load_vocoder(vocoder_name=self.vocoder_name, is_local=True, local_path=VOCODER_DIR)
             target_sample_rate = self.accelerator.unwrap_model(self.model).mel_spec.target_sample_rate
             log_samples_path = f"{self.checkpoint_path}/samples"
             os.makedirs(log_samples_path, exist_ok=True)

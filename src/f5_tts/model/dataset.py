@@ -1,7 +1,10 @@
+import glob
 import json
+import os
 import random
 from importlib.resources import files
 
+import datasets
 import torch
 import torch.nn.functional as F
 import torchaudio
@@ -279,10 +282,26 @@ def load_dataset(
             "Should manually modify the path of huggingface dataset to your need.\n"
             + "May also the corresponding script cuz different dataset may have different format."
         )
-        pre, post = dataset_name.split("_")
-        train_dataset = HFDataset(
-            load_dataset(f"{pre}/{pre}", split=f"train.{post}", cache_dir=str(files("f5_tts").joinpath("../../data"))),
-        )
+        data_files = glob.glob(os.path.join(dataset_name, '*.arrow')) + glob.glob(
+            os.path.join(dataset_name, '*.parquet'))
+        if data_files[0].endswith('.arrow'):
+            ds_format = 'arrow'
+        else:
+            ds_format = 'parquet'
+        if ds_format == 'arrow':
+            train_dataset = datasets.load_from_disk(dataset_name).train_test_split(0.01, shuffle=False)
+        else:
+            ds_cache_dir = '/home/projects/u6554606/llm/ds_cache_dir'
+            train_dataset = datasets.load_dataset(path=ds_format if ds_format == 'parquet' else dataset_name,
+                                             data_files=data_files if ds_format == 'parquet' else None,
+                                             split='train',
+                                             streaming=False,
+                                             cache_dir=ds_cache_dir,
+                                             num_proc=10).with_format('torch')
+        train_dataset.rename_column('texts', 'text')
+        train_dataset.rename_column('labels', 'mel_spec')
+        train_dataset['mel_spec'] = train_dataset['mel_spec'].transpose(-1, -2)
+
 
     return train_dataset
 

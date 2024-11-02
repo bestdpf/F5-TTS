@@ -19,6 +19,7 @@ from torch.nn.utils.rnn import pad_sequence
 from torchdiffeq import odeint
 
 from f5_tts.model.modules import MelSpec
+from f5_tts.model.token_utils import get_text_lang_locale, run_phn, get_phn_tokenizer
 from f5_tts.model.utils import (
     default,
     exists,
@@ -28,6 +29,8 @@ from f5_tts.model.utils import (
     mask_from_frac_lengths,
 )
 
+MAX_TEXT_LEN = 450
+MAX_AUDIO_LEN = 1800
 
 class CFM(nn.Module):
     def __init__(
@@ -114,10 +117,23 @@ class CFM(nn.Module):
         # text
 
         if isinstance(text, list):
-            if exists(self.vocab_char_map):
-                text = list_str_to_idx(text, self.vocab_char_map).to(device)
-            else:
-                text = list_str_to_tensor(text).to(device)
+            phns = []
+            for cur_text in text:
+                lang_id, lang_locale = get_text_lang_locale(cur_text)
+                try:
+                    phn = run_phn(cur_text, lang_locale)
+                except Exception as e:
+                    print(e)
+                    print(f'error phn {cur_text} {lang_id} {lang_locale}')
+                    phn = '[UNK]'
+
+                phns.append(phn)
+            phn_tokenizer = get_phn_tokenizer('cuda' if torch.cuda.is_available() else 'cpu')
+            phn_output = phn_tokenizer(phns, return_tensors='pt', max_length=MAX_TEXT_LEN,
+                                       padding='longest',
+                                       truncation=True,
+                                       return_attention_mask=True)
+            text = phn_output['input_ids']
             assert text.shape[0] == batch
 
         if exists(text):
@@ -227,10 +243,23 @@ class CFM(nn.Module):
 
         # handle text as string
         if isinstance(text, list):
-            if exists(self.vocab_char_map):
-                text = list_str_to_idx(text, self.vocab_char_map).to(device)
-            else:
-                text = list_str_to_tensor(text).to(device)
+            phns = []
+            for cur_text in text:
+                lang_id, lang_locale = get_text_lang_locale(cur_text)
+                try:
+                    phn = run_phn(cur_text, lang_locale)
+                except Exception as e:
+                    print(e)
+                    print(f'error phn {cur_text} {lang_id} {lang_locale}')
+                    phn = '[UNK]'
+
+                phns.append(phn)
+            phn_tokenizer = get_phn_tokenizer('cuda' if torch.cuda.is_available() else 'cpu')
+            phn_output = phn_tokenizer(phns, return_tensors='pt', max_length=MAX_TEXT_LEN,
+                                       padding='longest',
+                                       truncation=True,
+                                       return_attention_mask=True)
+            text = phn_output['input_ids']
             assert text.shape[0] == batch
 
         # lens and mask
