@@ -98,7 +98,7 @@ def main():
         mel_spec_type=mel_spec_type,
     )
 
-    train_dataset = load_dataset(dataset_name, tokenizer, mel_spec_kwargs=mel_spec_kwargs)
+    train_dataset = load_dataset(dataset_name, tokenizer, 'HFDataset', mel_spec_kwargs=mel_spec_kwargs)
     trainer.train(
         train_dataset,
         resumable_with_seed=666,  # seed for shuffling dataset
