@@ -7,4 +7,8 @@ export TORCH_DISTRIBUTED_DEBUG=DETAIL
 export HF_DATASETS_OFFLINE=1
 export TRANSFORMERS_OFFLINE=1
 
+export PATH=$PATH:/home/remote/u6554606/fb-project/bin
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/home/remote/u6554606/fb-project/lib
+
+
 python train.py > train.out 2>train.err&
