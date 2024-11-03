@@ -327,7 +327,8 @@ class Trainer:
 
                 if global_step % (self.save_per_updates * self.grad_accumulation_steps) == 0:
                     self.save_checkpoint(global_step)
-
+                    if torch.cuda.is_available():
+                        torch.cuda.empty_cache()
                     if self.log_samples and self.accelerator.is_local_main_process:
                         ref_audio, ref_audio_len = vocoder(batch["mel"][0].unsqueeze(0)), mel_lengths[0]
                         torchaudio.save(
