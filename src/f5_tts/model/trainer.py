@@ -333,6 +333,8 @@ class Trainer:
                         torchaudio.save(
                             f"{log_samples_path}/step_{global_step}_ref.wav", ref_audio.cpu(), target_sample_rate
                         )
+                        if torch.cuda.is_available():
+                            torch.cuda.empty_cache()
                         with torch.inference_mode():
                             generated, _ = self.accelerator.unwrap_model(self.model).sample(
                                 cond=mel_spec[0][:ref_audio_len].unsqueeze(0),
@@ -342,13 +344,17 @@ class Trainer:
                                 cfg_strength=cfg_strength,
                                 sway_sampling_coef=sway_sampling_coef,
                             )
-                        generated = generated.to(torch.float32)
+                        generated = generated.detach().to(torch.float32)
+                        if torch.cuda.is_available():
+                            torch.cuda.empty_cache()
                         gen_audio = vocoder(
                             generated[:, ref_audio_len:, :].permute(0, 2, 1).to(self.accelerator.device)
                         )
                         torchaudio.save(
                             f"{log_samples_path}/step_{global_step}_gen.wav", gen_audio.cpu(), target_sample_rate
                         )
+                        if torch.cuda.is_available():
+                            torch.cuda.empty_cache()
 
                 if global_step % self.last_per_steps == 0:
                     self.save_checkpoint(global_step, last=True)
