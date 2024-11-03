@@ -329,7 +329,7 @@ class Trainer:
                     self.save_checkpoint(global_step)
 
                     if self.log_samples and self.accelerator.is_local_main_process:
-                        ref_audio, ref_audio_len = vocoder.decode(batch["mel"][0].unsqueeze(0)), mel_lengths[0]
+                        ref_audio, ref_audio_len = vocoder(batch["mel"][0].unsqueeze(0)), mel_lengths[0]
                         torchaudio.save(
                             f"{log_samples_path}/step_{global_step}_ref.wav", ref_audio.cpu(), target_sample_rate
                         )
