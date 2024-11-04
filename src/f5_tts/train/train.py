@@ -23,7 +23,7 @@ mel_spec_type = "bigvgan"  # 'vocos' or 'bigvgan'
 
 tokenizer = "custom"  # 'pinyin', 'char', or 'custom'
 tokenizer_path = '/home/projects/u6554606/llm/split_phn_tokenizer'  # if tokenizer = 'custom', define the path to the tokenizer you want to use (should be vocab.txt)
-dataset_name = "/home/projects/u6554606/llm/multi_lang_mel_test"
+dataset_name = "/home/projects/u6554606/llm/multi_lang_mel"
 
 # -------------------------- Training Settings -------------------------- #
 
@@ -39,7 +39,7 @@ max_samples = 64  # max sequences per batch if use frame-wise batch_size. we set
 grad_accumulation_steps = 1  # note: updates = steps / grad_accumulation_steps
 max_grad_norm = 1.0
 
-epochs = 22  # use linear decay, thus epochs control the slope
+epochs = 30  # use linear decay, thus epochs control the slope
 num_warmup_updates = 10000  # warmup steps
 save_per_updates = 20000  # save checkpoint per steps
 last_per_steps = 2000  # save last checkpoint per steps
