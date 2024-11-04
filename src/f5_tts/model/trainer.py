@@ -298,7 +298,7 @@ class Trainer:
 
                     total_length = mel_lengths.sum()
                     if total_length > 3840:
-                        print(f'skip mel too long {total_length}')
+                        print(f'skip mel too long {total_length} in {global_step}')
                         continue
 
                     # TODO. add duration predictor training
