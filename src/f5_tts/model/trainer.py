@@ -298,6 +298,7 @@ class Trainer:
                     total_length = mel_lengths.sum()
                     if total_length > 38400:
                         print(f'skip mel too long {total_length}')
+                        continue
 
                     # TODO. add duration predictor training
                     if self.duration_predictor is not None and self.accelerator.is_local_main_process:
