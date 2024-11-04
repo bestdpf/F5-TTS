@@ -39,9 +39,9 @@ max_samples = 64  # max sequences per batch if use frame-wise batch_size. we set
 grad_accumulation_steps = 1  # note: updates = steps / grad_accumulation_steps
 max_grad_norm = 1.0
 
-epochs = 30  # use linear decay, thus epochs control the slope
+epochs = 2  # use linear decay, thus epochs control the slope
 num_warmup_updates = 10000  # warmup steps
-save_per_updates = 20000  # save checkpoint per steps
+save_per_updates = 10000  # save checkpoint per steps
 last_per_steps = 2000  # save last checkpoint per steps
 
 # model params
