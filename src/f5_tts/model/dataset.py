@@ -306,7 +306,7 @@ def load_dataset(
                                              split='train',
                                              streaming=False,
                                              cache_dir=ds_cache_dir,
-                                             num_proc=10).with_format('torch')
+                                             num_proc=40).with_format('torch')
         train_dataset = train_dataset.rename_column('texts', 'text')
         train_dataset = train_dataset.rename_column('labels', 'mel_spec')
         # train_dataset['mel_spec'] = train_dataset['mel_spec'].transpose(-1, -2)
