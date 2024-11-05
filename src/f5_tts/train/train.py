@@ -19,7 +19,7 @@ hop_length = 16
 # win_length = 1024
 win_length = 64
 n_fft = 1024
-mel_spec_type = "bigvgan"  # 'vocos' or 'bigvgan'
+mel_spec_type = "t5"  # 'vocos' or 'bigvgan'
 
 tokenizer = "custom"  # 'pinyin', 'char', or 'custom'
 tokenizer_path = '/home/projects/u6554606/llm/split_phn_tokenizer'  # if tokenizer = 'custom', define the path to the tokenizer you want to use (should be vocab.txt)

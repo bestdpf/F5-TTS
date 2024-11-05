@@ -8,6 +8,9 @@ export HF_DATASETS_IN_MEMORY_MAX_SIZE=130000000000
 export HF_DATASETS_OFFLINE=1
 export TRANSFORMERS_OFFLINE=1
 
+
+export VOCODER_DIR='/home/projects/u6554606/llm/speecht5_hifigan'
+
 export PATH=$PATH:/home/remote/u6554606/fb-project/bin
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/home/remote/u6554606/fb-project/lib:/home/projects/u6554606/llm/f5/lib/
 export PYTHONPATH=/home/projects/u6554606/llm/F5-TTS/src/third_party/BigVGAN

@@ -203,7 +203,7 @@ class Trainer:
             from f5_tts.infer.utils_infer import cfg_strength, load_vocoder, nfe_step, sway_sampling_coef
 
             VOCODER_DIR = os.environ.get('VOCODER_DIR',
-                                               '/home/projects/u6554606/llm/bigvgan_v2_22khz_80band_fmax8k_256x/')
+                                               '/home/projects/u6554606/llm/speecht5_hifigan/')
             vocoder = load_vocoder(vocoder_name=self.vocoder_name, is_local=True, local_path=VOCODER_DIR)
             target_sample_rate = self.accelerator.unwrap_model(self.model).mel_spec.target_sample_rate
             log_samples_path = f"{self.checkpoint_path}/samples"
@@ -341,7 +341,7 @@ class Trainer:
                         torch.cuda.empty_cache()
                     if self.log_samples and self.accelerator.is_local_main_process:
                         with torch.inference_mode():
-                            ref_audio, ref_audio_len = vocoder(batch["mel"][0].unsqueeze(0)), mel_lengths[0]
+                            ref_audio, ref_audio_len = vocoder(batch["mel"][0].permute(0, 1).unsqueeze(0)), mel_lengths[0]
                         torchaudio.save(
                             f"{log_samples_path}/step_{global_step}_ref.wav", ref_audio.detach().squeeze(0).cpu(), target_sample_rate
                         )
@@ -361,7 +361,7 @@ class Trainer:
                             torch.cuda.empty_cache()
                         with torch.inference_mode():
                             gen_audio = vocoder(
-                                generated[:, ref_audio_len:, :].permute(0, 2, 1).to(self.accelerator.device)
+                                generated[:, ref_audio_len:, :].to(self.accelerator.device)
                             )
                         torchaudio.save(
                             f"{log_samples_path}/step_{global_step}_gen.wav", gen_audio.detach().squeeze(0).cpu(), target_sample_rate

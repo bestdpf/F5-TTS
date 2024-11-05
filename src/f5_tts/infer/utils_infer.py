@@ -20,7 +20,7 @@ import torch
 import torchaudio
 import tqdm
 from pydub import AudioSegment, silence
-from transformers import pipeline
+from transformers import pipeline, SpeechT5HifiGan
 from vocos import Vocos
 
 from f5_tts.model import CFM
@@ -111,6 +111,12 @@ def load_vocoder(vocoder_name="vocos", is_local=False, local_path="", device=dev
 
         vocoder.remove_weight_norm()
         vocoder = vocoder.eval().to(device)
+    elif vocoder_name == 't5':
+        if is_local:
+            vocoder = SpeechT5HifiGan.from_pretrained(local_path, use_cuda_kernel=False)
+        else:
+            vocoder = SpeechT5HifiGan.from_pretrained('microsoft/speecht5_hifigan', use_cuda_kernel=False)
+
     return vocoder
 
 
