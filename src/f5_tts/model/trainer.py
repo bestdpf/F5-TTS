@@ -297,7 +297,7 @@ class Trainer:
                     mel_lengths = batch["mel_lengths"]
 
                     total_length = mel_lengths.sum()
-                    if total_length > 6700:
+                    if total_length > 6500:
                         print(f'skip mel too long {total_length} in {global_step}')
                         continue
 
@@ -323,9 +323,9 @@ class Trainer:
 
                 global_step += 1
 
-                if global_step % 20 == 0:
-                    if torch.cuda.is_available():
-                        torch.cuda.empty_cache()
+                # if global_step % 20 == 0:
+                #     if torch.cuda.is_available():
+                #         torch.cuda.empty_cache()
 
                 if self.accelerator.is_local_main_process:
                     self.accelerator.log({"loss": loss.item(), "lr": self.scheduler.get_last_lr()[0]}, step=global_step)
