@@ -260,7 +260,7 @@ class Trainer:
             train_dataloader, self.scheduler
         )  # actual steps = 1 gpu steps / gpus
         start_step = self.load_checkpoint()
-        start_step = 29050
+        # start_step = 29050
         global_step = start_step
 
         if exists(resumable_with_seed):
