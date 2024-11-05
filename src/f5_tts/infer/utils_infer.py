@@ -113,9 +113,9 @@ def load_vocoder(vocoder_name="vocos", is_local=False, local_path="", device=dev
         vocoder = vocoder.eval().to(device)
     elif vocoder_name == 't5':
         if is_local:
-            vocoder = SpeechT5HifiGan.from_pretrained(local_path, use_cuda_kernel=False)
+            vocoder = SpeechT5HifiGan.from_pretrained(local_path, device_map=device)
         else:
-            vocoder = SpeechT5HifiGan.from_pretrained('microsoft/speecht5_hifigan', use_cuda_kernel=False)
+            vocoder = SpeechT5HifiGan.from_pretrained('microsoft/speecht5_hifigan', device_map=device)
 
     return vocoder
 
