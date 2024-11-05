@@ -341,7 +341,7 @@ class Trainer:
                         torch.cuda.empty_cache()
                     if self.log_samples and self.accelerator.is_local_main_process:
                         with torch.inference_mode():
-                            ref_audio, ref_audio_len = vocoder(batch["mel"][0].permute(1, 0).unsqueeze(0)), mel_lengths[0]
+                            ref_audio, ref_audio_len = vocoder(batch["mel"][0, :, :mel_lengths[0]].permute(1, 0).unsqueeze(0)), mel_lengths[0]
                         torchaudio.save(
                             f"{log_samples_path}/step_{global_step}_ref.wav", ref_audio.detach().cpu(), target_sample_rate
                         )
