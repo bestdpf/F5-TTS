@@ -297,7 +297,7 @@ class Trainer:
                     mel_lengths = batch["mel_lengths"]
 
                     total_length = mel_lengths.sum()
-                    if total_length > 6200:
+                    if total_length > 5800:
                         print(f'skip mel too long {total_length} in {global_step}')
                         continue
 
