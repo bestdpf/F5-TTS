@@ -323,9 +323,9 @@ class Trainer:
 
                 global_step += 1
 
-                if global_step % 10 == 0:
-                    if torch.cuda.is_available():
-                        torch.cuda.empty_cache()
+                # if global_step % 10 == 0:
+                #     if torch.cuda.is_available():
+                #         torch.cuda.empty_cache()
 
                 if self.accelerator.is_local_main_process:
                     self.accelerator.log({"loss": loss.item(), "lr": self.scheduler.get_last_lr()[0]}, step=global_step)
