@@ -92,7 +92,8 @@ def run_eval(model_dir, vcoder_dir, out_path, text, prompt_audio_path, prompt_te
     audio_array = np.asarray(cur_audio_data)
     prompt_mel = get_t5_mel(audio_array, device)
 
-    ref_audio_len = prompt_mel.shape[1]
+    print(f'prompt mel shape is {prompt_mel.shape}')
+    ref_audio_len = prompt_mel.shape[0]
     # Calculate duration
     ref_text_len = len(prompt_text.encode("utf-8"))
     gen_text_len = len(text.encode("utf-8"))
@@ -100,7 +101,7 @@ def run_eval(model_dir, vcoder_dir, out_path, text, prompt_audio_path, prompt_te
 
     with torch.inference_mode():
         generated, _ = model.sample(
-            cond=prompt_mel,
+            cond=prompt_mel.unsqueeze(0),
             text=[prompt_text + " " + text],
             duration=duration,
             steps=nfe_step,
