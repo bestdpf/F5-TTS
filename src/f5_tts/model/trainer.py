@@ -292,17 +292,15 @@ class Trainer:
                 )
 
             for batch in progress_bar:
+                mel_lengths = batch["mel_lengths"]
+                total_length = mel_lengths.sum()
+                max_length = mel_lengths.max()
+                if max_length > 2000:
+                    print(f'skip mel too long {total_length} {max_length} in {global_step}')
+                    continue
                 with self.accelerator.accumulate(self.model):
                     text_inputs = batch["text"]
                     mel_spec = batch["mel"].permute(0, 2, 1)
-                    mel_lengths = batch["mel_lengths"]
-
-                    total_length = mel_lengths.sum()
-                    max_length = mel_lengths.max()
-                    # print(f'test mel long {total_length} {max_length} in {global_step}')
-                    if max_length > 2000:
-                        print(f'skip mel too long {total_length} {max_length} in {global_step}')
-                        continue
 
                     # TODO. add duration predictor training
                     if self.duration_predictor is not None and self.accelerator.is_local_main_process:
