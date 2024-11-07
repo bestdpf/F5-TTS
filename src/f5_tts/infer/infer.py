@@ -50,10 +50,7 @@ def get_processor(device='cpu'):
         if PROCESSOR is None:
             SPEECHT5_DIR = os.environ.get('SPEECHT5_DIR', '/Volumes/ExFAT/speecht5/speech/speecht5_tts')
             PROCESSOR = SpeechT5Processor.from_pretrained(SPEECHT5_DIR, device_map=device,
-                                                          normalize=False,
-                                                          vocab_file=os.path.join(
-                                                              os.path.dirname(os.path.abspath(__file__), ),
-                                                              'llama_tokenizer.model'))
+                                                          normalize=False)
         return PROCESSOR
 
 def get_t5_mel(wavform, device):
