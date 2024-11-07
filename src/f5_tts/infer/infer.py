@@ -86,7 +86,7 @@ def run_eval(model_dir, vcoder_dir, out_path, text, prompt_audio_path, prompt_te
         vocab_char_map=vocab_char_map,
     )
 
-    model = load_checkpoint(model, model_dir, device, dtype='float16', use_ema=True)
+    model = load_checkpoint(model, model_dir, device, dtype=torch.float16, use_ema=True)
 
     vocoder = SpeechT5HifiGan.from_pretrained(vcoder_dir, device_map=device)
 
