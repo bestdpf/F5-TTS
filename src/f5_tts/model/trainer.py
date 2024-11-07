@@ -336,7 +336,7 @@ class Trainer:
 
                 progress_bar.set_postfix(step=str(global_step), loss=loss.item())
 
-                if global_step % (self.save_per_updates * self.grad_accumulation_steps) == 0:
+                if global_step % self.save_per_updates == 0:
                     self.save_checkpoint(global_step)
                     if torch.cuda.is_available():
                         torch.cuda.empty_cache()
