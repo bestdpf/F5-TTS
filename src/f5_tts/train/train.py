@@ -36,7 +36,7 @@ batch_size_per_gpu = 8  # 8 GPUs, 8 * 38400 = 307200
 # batch_size_type = "frame"  # "frame" or "sample"
 batch_size_type = "sample"  # "frame" or "sample"
 max_samples = 64  # max sequences per batch if use frame-wise batch_size. we set 32 for small models, 64 for base models
-grad_accumulation_steps = 4  # note: updates = steps / grad_accumulation_steps
+grad_accumulation_steps = 16  # note: updates = steps / grad_accumulation_steps
 max_grad_norm = 1.0
 
 epochs = 2  # use linear decay, thus epochs control the slope

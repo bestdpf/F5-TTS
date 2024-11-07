@@ -236,7 +236,7 @@ class Trainer:
                 train_dataset,
                 collate_fn=collate_fn,
                 num_workers=num_workers,
-                prefetch_factor=8,
+                prefetch_factor=32,
                 pin_memory=True,
                 persistent_workers=True,
                 batch_sampler=batch_sampler,
