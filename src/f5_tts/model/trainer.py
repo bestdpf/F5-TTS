@@ -300,7 +300,7 @@ class Trainer:
                     total_length = mel_lengths.sum()
                     max_length = mel_lengths.max()
                     # print(f'test mel long {total_length} {max_length} in {global_step}')
-                    if total_length >7200 or max_length > 2000:
+                    if max_length > 2000:
                         print(f'skip mel too long {total_length} {max_length} in {global_step}')
                         continue
 
