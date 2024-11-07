@@ -261,7 +261,7 @@ class Trainer:
             train_dataloader, self.scheduler
         )  # actual steps = 1 gpu steps / gpus
         start_step = self.load_checkpoint()
-        start_step = 195600
+        # start_step = 195600
         global_step = start_step
 
         if exists(resumable_with_seed):
@@ -298,8 +298,8 @@ class Trainer:
                     mel_lengths = batch["mel_lengths"]
 
                     total_length = mel_lengths.sum()
-                    print(f'test mel long {total_length} in {global_step}')
-                    if total_length > 5400:
+                    # print(f'test mel long {total_length} in {global_step}')
+                    if total_length > 5200:
                         print(f'skip mel too long {total_length} in {global_step}')
                         continue
 
