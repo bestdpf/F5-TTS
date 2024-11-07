@@ -120,7 +120,7 @@ class MelSpec(nn.Module):
         self.n_mel_channels = n_mel_channels
         self.target_sample_rate = target_sample_rate
 
-        if mel_spec_type == "vocos":
+        if mel_spec_type in ["vocos", 't5']:
             self.extractor = get_vocos_mel_spectrogram
         elif mel_spec_type == "bigvgan":
             self.extractor = get_bigvgan_mel_spectrogram
