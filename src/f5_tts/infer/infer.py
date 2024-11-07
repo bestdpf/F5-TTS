@@ -55,9 +55,13 @@ def get_processor(device='cpu'):
 
 def get_t5_mel(wavform, device):
     processor = get_processor(device)
-    input_dict = processor(audio=wavform, sampling_rate=16000,
-                                   return_attention_mask=False)
-    return input_dict['input_values']
+
+    input_dict = processor(text='test',
+                           audio_target=wavform,
+                           sampling_rate=16000,
+                           return_attention_mask=False,
+                           )
+    return input_dict['labels']
 
 def run_eval(model_dir, vcoder_dir, out_path, text, prompt_audio_path, prompt_text, device):
     model_cls = DiT
@@ -93,7 +97,7 @@ def run_eval(model_dir, vcoder_dir, out_path, text, prompt_audio_path, prompt_te
     prompt_mel = get_t5_mel(audio_array, device)
 
     print(f'prompt mel shape is {prompt_mel.shape}')
-    ref_audio_len = prompt_mel.shape[0]
+    ref_audio_len = prompt_mel.shape[1]
     # Calculate duration
     ref_text_len = len(prompt_text.encode("utf-8"))
     gen_text_len = len(text.encode("utf-8"))
@@ -101,7 +105,7 @@ def run_eval(model_dir, vcoder_dir, out_path, text, prompt_audio_path, prompt_te
 
     with torch.inference_mode():
         generated, _ = model.sample(
-            cond=prompt_mel.unsqueeze(0),
+            cond=prompt_mel,
             text=[prompt_text + " " + text],
             duration=duration,
             steps=nfe_step,
