@@ -95,6 +95,7 @@ def run_eval(model_dir, vcoder_dir, out_path, text, prompt_audio_path, prompt_te
     cur_audio_data, src = librosa.load(prompt_audio_path, sr=16000)
     audio_array = np.asarray(cur_audio_data)
     prompt_mel = get_t5_mel(audio_array, device)
+    prompt_mel = torch.as_tensor(prompt_mel, device=device)
 
     print(f'prompt mel shape is {prompt_mel.shape}')
     ref_audio_len = prompt_mel.shape[1]
