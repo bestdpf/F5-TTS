@@ -6,7 +6,7 @@ import torch
 
 from f5_tts.model import CFM, DiT, Trainer, UNetT
 from f5_tts.model.dataset import load_dataset
-from f5_tts.model.token_utils import get_phn_tokenizer
+from f5_tts.model.token_utils import get_xtts_tokenizer
 
 # -------------------------- Dataset Settings --------------------------- #
 
@@ -60,9 +60,9 @@ elif exp_name == "E2TTS_Base":
 
 def main():
 
-    phn_tokenizer = get_phn_tokenizer('cuda' if torch.cuda.is_available() else 'cpu')
+    phn_tokenizer = get_xtts_tokenizer()
 
-    vocab_size = len(phn_tokenizer.get_vocab())
+    vocab_size = len(phn_tokenizer.get_number_tokens())
     vocab_char_map = None
 
     mel_spec_kwargs = dict(

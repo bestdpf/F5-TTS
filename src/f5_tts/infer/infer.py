@@ -17,7 +17,7 @@ from f5_tts.infer.utils_infer import (
     remove_silence_for_generated_wav,
 )
 from f5_tts.model import DiT, UNetT, CFM
-from f5_tts.model.token_utils import get_phn_tokenizer
+from f5_tts.model.token_utils import get_xtts_tokenizer
 from f5_tts.infer.utils_infer import load_checkpoint
 from transformers.models.speecht5 import SpeechT5FeatureExtractor, SpeechT5Processor
 
@@ -67,9 +67,9 @@ def run_eval(model_dir, vcoder_dir, out_path, text, prompt_audio_path, prompt_te
     model_cls = DiT
     model_cfg = dict(dim=1024, depth=22, heads=16, ff_mult=2, text_dim=512, conv_layers=4)
 
-    phn_tokenizer = get_phn_tokenizer(device)
+    phn_tokenizer = get_xtts_tokenizer()
 
-    vocab_size = len(phn_tokenizer.get_vocab())
+    vocab_size = len(phn_tokenizer.get_number_tokens())
     vocab_char_map = None
 
     mel_spec_kwargs = dict(
