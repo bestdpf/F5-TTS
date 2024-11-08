@@ -3,7 +3,7 @@ import threading
 
 from lingua import Language, LanguageDetectorBuilder
 
-from TTS.tts.layers.xtts.tokenizer import VoiceBpeTokenizer, split_sentence
+from f5_tts.model.tokenizer import VoiceBpeTokenizer, split_sentence
 
 
 LANG_ID = {
