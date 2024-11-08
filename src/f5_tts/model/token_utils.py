@@ -41,7 +41,7 @@ LANG_LOCALE = {
     Language.ITALIAN: 'it',
     Language.TURKISH: 'tr',
     Language.RUSSIAN: 'ru',
-    Language.CZECH: 'cz',
+    Language.CZECH: 'cs',
     Language.HUNGARIAN: 'hu',
     Language.HINDI: 'hi'
 }
