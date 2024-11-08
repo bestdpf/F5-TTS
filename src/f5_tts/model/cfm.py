@@ -19,7 +19,7 @@ from torch.nn.utils.rnn import pad_sequence
 from torchdiffeq import odeint
 
 from f5_tts.model.modules import MelSpec
-from f5_tts.model.token_utils import get_text_lang_locale, run_phn, get_phn_tokenizer
+from f5_tts.model.token_utils import get_text_lang_locale, get_xtts_tokenizer
 from f5_tts.model.utils import (
     default,
     exists,
@@ -76,7 +76,7 @@ class CFM(nn.Module):
 
         # vocab map for tokenization
         self.vocab_char_map = vocab_char_map
-        self.phn_tokenizer = get_phn_tokenizer(self.device)
+        self.phn_tokenizer = get_xtts_tokenizer()
 
     @property
     def device(self):
@@ -121,21 +121,11 @@ class CFM(nn.Module):
             phns = []
             for cur_text in text:
                 lang_id, lang_locale = get_text_lang_locale(cur_text)
-                try:
-                    phn = run_phn(cur_text, lang_locale)
-                    # print(f'test phn {phn}')
-                except Exception as e:
-                    print(e)
-                    print(f'error phn {cur_text} {lang_id} {lang_locale}')
-                    phn = '[UNK]'
-
+                phn = torch.IntTensor(self.phn_tokenizer.encode(cur_text, lang=lang_locale)[:MAX_TEXT_LEN])
                 phns.append(phn)
 
-            phn_output = self.phn_tokenizer(phns, return_tensors='pt', max_length=MAX_TEXT_LEN,
-                                       padding='longest',
-                                       truncation=True,
-                                       return_attention_mask=True)
-            text = phn_output['input_ids'].to(device)
+            phn_output = pad_sequence(phns, padding_value=0, batch_first=True)
+            text = phn_output.to(device)
             assert text.shape[0] == batch
 
         if exists(text):
@@ -248,20 +238,11 @@ class CFM(nn.Module):
             phns = []
             for cur_text in text:
                 lang_id, lang_locale = get_text_lang_locale(cur_text)
-                try:
-                    phn = run_phn(cur_text, lang_locale)
-                    # print(f'test phn {phn}')
-                except Exception as e:
-                    print(e)
-                    print(f'error phn {cur_text} {lang_id} {lang_locale}')
-                    phn = '[UNK]'
-
+                phn = torch.IntTensor(self.phn_tokenizer.encode(cur_text, lang=lang_locale)[:MAX_TEXT_LEN])
                 phns.append(phn)
-            phn_output = self.phn_tokenizer(phns, return_tensors='pt', max_length=MAX_TEXT_LEN,
-                                       padding='longest',
-                                       truncation=True,
-                                       return_attention_mask=True)
-            text = phn_output['input_ids'].to(device)
+
+            phn_output = pad_sequence(phns, padding_value=0, batch_first=True)
+            text = phn_output.to(device)
             assert text.shape[0] == batch
 
         # lens and mask
