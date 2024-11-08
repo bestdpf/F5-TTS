@@ -62,7 +62,7 @@ def main():
 
     phn_tokenizer = get_xtts_tokenizer()
 
-    vocab_size = len(phn_tokenizer.get_number_tokens())
+    vocab_size = phn_tokenizer.get_number_tokens()
     vocab_char_map = None
 
     mel_spec_kwargs = dict(

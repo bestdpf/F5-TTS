@@ -69,7 +69,7 @@ def run_eval(model_dir, vcoder_dir, out_path, text, prompt_audio_path, prompt_te
 
     phn_tokenizer = get_xtts_tokenizer()
 
-    vocab_size = len(phn_tokenizer.get_number_tokens())
+    vocab_size = phn_tokenizer.get_number_tokens()
     vocab_char_map = None
 
     mel_spec_kwargs = dict(
