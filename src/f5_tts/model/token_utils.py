@@ -82,3 +82,10 @@ def get_xtts_tokenizer():
             vob_file = os.path.join(os.path.dirname(os.path.realpath(__file__)), "vocab.json")
             XTTS_TPKENIZER = VoiceBpeTokenizer(vocab_file=vob_file)
         return XTTS_TPKENIZER
+
+
+if __name__ == '__main__':
+    tokenizer = get_xtts_tokenizer()
+    ret = tokenizer.encode('I am a good boy', 'en')
+    print(ret)
+    print(type(ret))
