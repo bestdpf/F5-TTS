@@ -245,33 +245,30 @@ class Trainer:
         else:
             raise ValueError(f"batch_size_type must be either 'sample' or 'frame', but received {self.batch_size_type}")
 
-        self.scheduler = None
+        #  accelerator.prepare() dispatches batches to devices;
+        #  which means the length of dataloader calculated before, should consider the number of devices
+
+        warmup_steps = (
+            self.num_warmup_updates * self.accelerator.num_processes / self.grad_accumulation_steps
+        )  # consider a fixed warmup steps while using accelerate multi-gpu ddp
+        # otherwise by default with split_batches=False, warmup steps change with num_processes
+        total_steps = len(train_dataloader) * self.epochs / self.grad_accumulation_steps
+        decay_steps = total_steps - warmup_steps
+        warmup_scheduler = LinearLR(self.optimizer, start_factor=1e-8, end_factor=1.0, total_iters=warmup_steps)
+        decay_scheduler = LinearLR(self.optimizer, start_factor=1.0, end_factor=1e-8, total_iters=decay_steps)
+        self.scheduler = SequentialLR(
+            self.optimizer, schedulers=[warmup_scheduler, decay_scheduler], milestones=[warmup_steps]
+        )
+        train_dataloader, self.scheduler = self.accelerator.prepare(
+            train_dataloader,
+            self.scheduler
+        )  # actual steps = 1 gpu steps / gpus
+
         start_step = self.load_checkpoint()
         # start_step = 195600
         global_step = start_step
 
-        #  accelerator.prepare() dispatches batches to devices;
-        #  which means the length of dataloader calculated before, should consider the number of devices
-
-        if self.scheduler is None:
-            warmup_steps = (
-                self.num_warmup_updates * self.accelerator.num_processes / self.grad_accumulation_steps
-            )  # consider a fixed warmup steps while using accelerate multi-gpu ddp
-            # otherwise by default with split_batches=False, warmup steps change with num_processes
-            total_steps = len(train_dataloader) * self.epochs / self.grad_accumulation_steps
-            decay_steps = total_steps - warmup_steps
-            warmup_scheduler = LinearLR(self.optimizer, start_factor=1e-8, end_factor=1.0, total_iters=warmup_steps)
-            decay_scheduler = LinearLR(self.optimizer, start_factor=1.0, end_factor=1e-8, total_iters=decay_steps)
-            self.scheduler = SequentialLR(
-                self.optimizer, schedulers=[warmup_scheduler, decay_scheduler], milestones=[warmup_steps]
-            )
-            self.scheduler = self.accelerator.prepare(
-                self.scheduler
-            )  # actual steps = 1 gpu steps / gpus
-
-            # print(f'dump scheduler {self.scheduler.state_dict()}')
-
-        train_dataloader = self.accelerator.prepare(train_dataloader)
+        # print(f'dump scheduler {self.scheduler.state_dict()}')
 
         if exists(resumable_with_seed):
             orig_epoch_step = len(train_dataloader)
