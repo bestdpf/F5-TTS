@@ -86,7 +86,7 @@ class CFM(nn.Module):
     def sample(
         self,
         cond: float["b n d"] | float["b nw"],  # noqa: F722
-        text: int["b nt"] | list[str],  # noqa: F722
+        text: int["b nt"] | list[str] | list[list[str]],  # noqa: F722
         duration: int | int["b"],  # noqa: F821
         *,
         lens: int["b"] | None = None,  # noqa: F821
@@ -120,8 +120,16 @@ class CFM(nn.Module):
         if isinstance(text, list):
             phns = []
             for cur_text in text:
-                lang_id, lang_locale = get_text_lang_locale(cur_text)
-                phn = torch.IntTensor(self.phn_tokenizer.encode(cur_text, lang=lang_locale)[:MAX_TEXT_LEN])
+                if isinstance(cur_text, list):
+                    phn = []
+                    for sub_text in cur_text:
+                        lang_id, lang_locale = get_text_lang_locale(sub_text)
+                        sub_phn = torch.IntTensor(self.phn_tokenizer.encode(sub_text, lang=lang_locale)[:MAX_TEXT_LEN])
+                        phn.extend(sub_phn)
+                    phn = torch.IntTensor(phn[:MAX_TEXT_LEN])
+                else:
+                    lang_id, lang_locale = get_text_lang_locale(cur_text)
+                    phn = torch.IntTensor(self.phn_tokenizer.encode(cur_text, lang=lang_locale)[:MAX_TEXT_LEN])
                 phns.append(phn)
 
             phn_output = pad_sequence(phns, padding_value=0, batch_first=True)
