@@ -119,6 +119,7 @@ class CFM(nn.Module):
 
         if isinstance(text, list):
             phns = []
+            langs = []
             for cur_text in text:
                 lang_id, lang_locale = get_text_lang_locale(cur_text)
                 try:
@@ -128,14 +129,23 @@ class CFM(nn.Module):
                     print(e)
                     print(f'error phn {cur_text} {lang_id} {lang_locale}')
                     phn = '[UNK]'
-
                 phns.append(phn)
+                langs.append(lang_id)
 
-            phn_output = self.phn_tokenizer(phns, return_tensors='pt', max_length=MAX_TEXT_LEN,
+            phn_output = self.phn_tokenizer(phns, max_length=MAX_TEXT_LEN,
                                        padding='longest',
                                        truncation=True,
-                                       return_attention_mask=True)
-            text = phn_output['input_ids'].to(device)
+                                       add_special_tokens=False,
+                                       return_attention_mask=False)
+            text = phn_output['input_ids']
+            text_lang_tensor = []
+            text_tensor = []
+            for idx, text_id in enumerate(text):
+                text_lang_tensor.append(torch.IntTensor([langs[idx]]*len(text_id)))
+                text_tensor.append(torch.IntTensor(text_id))
+
+            text = pad_sequence(text_tensor, batch_first=True, padding_value=0)
+            langs = pad_sequence(text_lang_tensor, batch_first=True, padding_value=0)
             assert text.shape[0] == batch
 
         if exists(text):
@@ -183,13 +193,13 @@ class CFM(nn.Module):
 
             # predict flow
             pred = self.transformer(
-                x=x, cond=step_cond, text=text, time=t, mask=mask, drop_audio_cond=False, drop_text=False
+                x=x, cond=step_cond, text=text, lang=langs, time=t, mask=mask, drop_audio_cond=False, drop_text=False
             )
             if cfg_strength < 1e-5:
                 return pred
 
             null_pred = self.transformer(
-                x=x, cond=step_cond, text=text, time=t, mask=mask, drop_audio_cond=True, drop_text=True
+                x=x, cond=step_cond, text=text, lang=langs, time=t, mask=mask, drop_audio_cond=True, drop_text=True
             )
             return pred + (pred - null_pred) * cfg_strength
 
@@ -246,6 +256,7 @@ class CFM(nn.Module):
         # handle text as string
         if isinstance(text, list):
             phns = []
+            langs = []
             for cur_text in text:
                 lang_id, lang_locale = get_text_lang_locale(cur_text)
                 try:

@@ -30,9 +30,10 @@ from f5_tts.model.modules import (
 
 
 class TextEmbedding(nn.Module):
-    def __init__(self, text_num_embeds, text_dim, conv_layers=0, conv_mult=2):
+    def __init__(self, text_num_embeds, num_langs, text_dim, conv_layers=0, conv_mult=2):
         super().__init__()
         self.text_embed = nn.Embedding(text_num_embeds + 1, text_dim)  # use 0 as filler token
+        self.lang_embed = nn.Embedding(num_langs, text_dim)
 
         if conv_layers > 0:
             self.extra_modeling = True
@@ -44,16 +45,21 @@ class TextEmbedding(nn.Module):
         else:
             self.extra_modeling = False
 
-    def forward(self, text: int["b nt"], seq_len, drop_text=False):  # noqa: F722
+    def forward(self, text: int["b nt"], lang: int["b nt"], seq_len, drop_text=False):  # noqa: F722
         text = text + 1  # use 0 as filler token. preprocess of batch pad -1, see list_str_to_idx()
         text = text[:, :seq_len]  # curtail if character tokens are more than the mel spec tokens
         batch, text_len = text.shape[0], text.shape[1]
         text = F.pad(text, (0, seq_len - text_len), value=0)
 
+        lang = lang[:, :seq_len]
+        lang = F.pad(lang, (0, seq_len - text_len), value=0)
+
         if drop_text:  # cfg for text
             text = torch.zeros_like(text)
 
         text = self.text_embed(text)  # b n -> b n d
+        lang = self.lang_embed(lang)  # b n -> b n d
+        text = text + lang
 
         # possible extra modeling
         if self.extra_modeling:
@@ -111,7 +117,7 @@ class DiT(nn.Module):
         self.time_embed = TimestepEmbedding(dim)
         if text_dim is None:
             text_dim = mel_dim
-        self.text_embed = TextEmbedding(text_num_embeds, text_dim, conv_layers=conv_layers)
+        self.text_embed = TextEmbedding(text_num_embeds, 20, text_dim, conv_layers=conv_layers)
         self.input_embed = InputEmbedding(mel_dim, text_dim, dim)
 
         self.rotary_embed = RotaryEmbedding(dim_head)
@@ -131,7 +137,8 @@ class DiT(nn.Module):
         self,
         x: float["b n d"],  # nosied input audio  # noqa: F722
         cond: float["b n d"],  # masked cond audio  # noqa: F722
-        text: int["b nt"],  # text  # noqa: F722
+        text: int["b nt"], # text  # noqa: F722
+        lang: int["b nt"],
         time: float["b"] | float[""],  # time step  # noqa: F821 F722
         drop_audio_cond,  # cfg for cond audio
         drop_text,  # cfg for text
