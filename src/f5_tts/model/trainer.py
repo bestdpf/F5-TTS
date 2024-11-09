@@ -182,8 +182,8 @@ class Trainer:
 
             self.accelerator.unwrap_model(self.model).load_state_dict(checkpoint["model_state_dict"])
             self.accelerator.unwrap_model(self.optimizer).load_state_dict(checkpoint["optimizer_state_dict"])
-            # if self.scheduler:
-            #     self.scheduler.load_state_dict(checkpoint["scheduler_state_dict"])
+            if self.scheduler:
+                self.scheduler.load_state_dict(checkpoint["scheduler_state_dict"])
             step = checkpoint["step"]
         else:
             checkpoint["model_state_dict"] = {
@@ -244,10 +244,6 @@ class Trainer:
         else:
             raise ValueError(f"batch_size_type must be either 'sample' or 'frame', but received {self.batch_size_type}")
 
-        start_step = self.load_checkpoint()
-        # start_step = 195600
-        global_step = start_step
-
         #  accelerator.prepare() dispatches batches to devices;
         #  which means the length of dataloader calculated before, should consider the number of devices
         warmup_steps = (
@@ -266,6 +262,10 @@ class Trainer:
         )  # actual steps = 1 gpu steps / gpus
 
         # print(f'dump scheduler {self.scheduler.state_dict()}')
+
+        start_step = self.load_checkpoint()
+        # start_step = 195600
+        global_step = start_step
 
 
         if exists(resumable_with_seed):
