@@ -48,7 +48,7 @@ class Trainer:
         bnb_optimizer: bool = False,
         mel_spec_type: str = "vocos",  # "vocos" | "bigvgan"
     ):
-        ddp_kwargs = DistributedDataParallelKwargs(find_unused_parameters=True)
+        ddp_kwargs = DistributedDataParallelKwargs(find_unused_parameters=False)
 
         if logger == "wandb" and not wandb.api.api_key:
             logger = None
