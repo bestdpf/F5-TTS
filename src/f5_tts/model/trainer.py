@@ -258,20 +258,14 @@ class Trainer:
         self.scheduler = SequentialLR(
             self.optimizer, schedulers=[warmup_scheduler, decay_scheduler], milestones=[warmup_steps]
         )
-        # train_dataloader, self.scheduler = self.accelerator.prepare(
-        #     train_dataloader, self.scheduler
-        # )  # actual steps = 1 gpu steps / gpus
+        train_dataloader, self.scheduler = self.accelerator.prepare(
+            train_dataloader, self.scheduler
+        )  # actual steps = 1 gpu steps / gpus
 
         start_step = self.load_checkpoint()
         # start_step = 195600
         global_step = start_step
 
-        self.scheduler = SequentialLR(
-            self.optimizer, schedulers=[warmup_scheduler, decay_scheduler], milestones=[warmup_steps]
-        )
-        train_dataloader, self.scheduler = self.accelerator.prepare(
-            train_dataloader, self.scheduler
-        )
 
         if exists(resumable_with_seed):
             orig_epoch_step = len(train_dataloader)
