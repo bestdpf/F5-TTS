@@ -262,6 +262,8 @@ class Trainer:
             train_dataloader, self.scheduler
         )  # actual steps = 1 gpu steps / gpus
 
+        print(f'dump scheduler {self.scheduler.state_dict()}')
+
         start_step = self.load_checkpoint()
         # start_step = 195600
         global_step = start_step
