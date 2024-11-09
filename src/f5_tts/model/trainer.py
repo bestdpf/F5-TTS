@@ -244,8 +244,7 @@ class Trainer:
         else:
             raise ValueError(f"batch_size_type must be either 'sample' or 'frame', but received {self.batch_size_type}")
 
-        start_step = self.load_checkpoint()
-        # start_step = 195600
+
         #  accelerator.prepare() dispatches batches to devices;
         #  which means the length of dataloader calculated before, should consider the number of devices
         warmup_steps = (
@@ -259,12 +258,20 @@ class Trainer:
         self.scheduler = SequentialLR(
             self.optimizer, schedulers=[warmup_scheduler, decay_scheduler], milestones=[warmup_steps]
         )
+        # train_dataloader, self.scheduler = self.accelerator.prepare(
+        #     train_dataloader, self.scheduler
+        # )  # actual steps = 1 gpu steps / gpus
+
+        start_step = self.load_checkpoint()
+        # start_step = 195600
+        global_step = start_step
+
+        self.scheduler = SequentialLR(
+            self.optimizer, schedulers=[warmup_scheduler, decay_scheduler], milestones=[warmup_steps]
+        )
         train_dataloader, self.scheduler = self.accelerator.prepare(
             train_dataloader, self.scheduler
-        )  # actual steps = 1 gpu steps / gpus
-
-
-        global_step = start_step
+        )
 
         if exists(resumable_with_seed):
             orig_epoch_step = len(train_dataloader)
