@@ -33,7 +33,7 @@ LANG_LOCALE = {
     Language.JAPANESE: 'ja',
     Language.ARABIC: 'ar',
     Language.DUTCH: 'nl',
-    Language.CHINESE: 'zh',
+    Language.CHINESE: 'cmn',
     Language.GERMAN: 'de',
     Language.POLISH: 'pl',
     Language.PORTUGUESE: 'pt',
