@@ -144,8 +144,8 @@ class CFM(nn.Module):
                         sub_lang = [lang_id] * len(sub_phn)
                         phn.extend(sub_phn)
                         lang.extend(sub_lang)
-                    phn = torch.IntTensor(phn, device=device)
-                    lang = torch.IntTensor(lang, device=device)
+                    phn = torch.IntTensor(phn)
+                    lang = torch.IntTensor(lang)
                     langs.append(lang)
                     phns.append(phn)
 
