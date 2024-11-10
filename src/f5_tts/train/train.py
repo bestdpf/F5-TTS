@@ -107,6 +107,7 @@ def main():
     trainer.train(
         train_dataset,
         resumable_with_seed=666,  # seed for shuffling dataset
+        reset_scheduler=False
     )
 
 
