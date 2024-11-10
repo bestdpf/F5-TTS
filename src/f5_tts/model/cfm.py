@@ -149,8 +149,8 @@ class CFM(nn.Module):
                     langs.append(lang)
                     phns.append(phn)
 
-            text = pad_sequence(phns, batch_first=True, padding_value=0)
-            langs = pad_sequence(langs, batch_first=True, padding_value=0)
+            text = pad_sequence(phns, batch_first=True, padding_value=0).to(self.device)
+            langs = pad_sequence(langs, batch_first=True, padding_value=0).to(self.device)
             assert text.shape[0] == batch
 
         if exists(text):
