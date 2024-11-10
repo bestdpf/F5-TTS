@@ -250,7 +250,7 @@ class Trainer:
         #  accelerator.prepare() dispatches batches to devices;
         #  which means the length of dataloader calculated before, should consider the number of devices
         warmup_steps = (
-            self.num_warmup_updates * self.accelerator.num_processes
+            self.num_warmup_updates * self.accelerator.num_processes / self.grad_accumulation_steps
         )  # consider a fixed warmup steps while using accelerate multi-gpu ddp
         # otherwise by default with split_batches=False, warmup steps change with num_processes
         total_steps = len(train_dataloader) * self.epochs / self.grad_accumulation_steps
