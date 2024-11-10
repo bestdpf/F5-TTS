@@ -6,20 +6,6 @@ from lingua import Language, LanguageDetectorBuilder
 from phonemizer.phonemize import  BACKENDS, _phonemize, Separator
 
 LANG_ID = {
-    # 'unknow': 0,
-    # 'en': 1,
-    # 'es': 2,
-    # 'fr': 3,
-    # 'ko': 4,
-    # 'ja': 5,
-    # 'ar': 6,
-    # 'nl': 7,
-    # 'zh-cn': 8,
-    # 'zh-tw': 9,
-    # 'de': 11,
-    # 'pl': 12,
-    # 'pt': 13,
-    # 'it': 14,
     Language.ENGLISH: 1,
     Language.SPANISH: 2,
     Language.FRENCH: 3,
@@ -31,22 +17,32 @@ LANG_ID = {
     Language.GERMAN: 9,
     Language.POLISH: 10,
     Language.PORTUGUESE: 11,
-    Language.ITALIAN: 12
+    Language.ITALIAN: 12,
+    Language.TURKISH: 13,
+    Language.RUSSIAN: 14,
+    Language.CZECH: 15,
+    Language.HUNGARIAN: 16,
+    Language.HINDI: 17
 }
 
 LANG_LOCALE = {
-    Language.ENGLISH: 'en-us',
+    Language.ENGLISH: 'en',
     Language.SPANISH: 'es',
-    Language.FRENCH: 'fr-fr',
+    Language.FRENCH: 'fr',
     Language.KOREAN: 'ko',
     Language.JAPANESE: 'ja',
     Language.ARABIC: 'ar',
     Language.DUTCH: 'nl',
-    Language.CHINESE: 'cmn',
+    Language.CHINESE: 'zh',
     Language.GERMAN: 'de',
     Language.POLISH: 'pl',
-    Language.PORTUGUESE: 'pt-br',
-    Language.ITALIAN: 'it'
+    Language.PORTUGUESE: 'pt',
+    Language.ITALIAN: 'it',
+    Language.TURKISH: 'tr',
+    Language.RUSSIAN: 'ru',
+    Language.CZECH: 'cs',
+    Language.HUNGARIAN: 'hu',
+    Language.HINDI: 'hi'
 }
 
 
