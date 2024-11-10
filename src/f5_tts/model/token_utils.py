@@ -26,9 +26,9 @@ LANG_ID = {
 }
 
 LANG_LOCALE = {
-    Language.ENGLISH: 'en',
+    Language.ENGLISH: 'en-us',
     Language.SPANISH: 'es',
-    Language.FRENCH: 'fr',
+    Language.FRENCH: 'fr-fr',
     Language.KOREAN: 'ko',
     Language.JAPANESE: 'ja',
     Language.ARABIC: 'ar',
@@ -36,7 +36,7 @@ LANG_LOCALE = {
     Language.CHINESE: 'cmn',
     Language.GERMAN: 'de',
     Language.POLISH: 'pl',
-    Language.PORTUGUESE: 'pt',
+    Language.PORTUGUESE: 'pt-br',
     Language.ITALIAN: 'it',
     Language.TURKISH: 'tr',
     Language.RUSSIAN: 'ru',
