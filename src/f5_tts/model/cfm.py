@@ -286,8 +286,8 @@ class CFM(nn.Module):
                 text_lang_tensor.append(torch.IntTensor([langs[idx]] * len(text_id)))
                 text_tensor.append(torch.IntTensor(text_id))
 
-            text = pad_sequence(text_tensor, batch_first=True, padding_value=0)
-            langs = pad_sequence(text_lang_tensor, batch_first=True, padding_value=0)
+            text = pad_sequence(text_tensor, batch_first=True, padding_value=0).to(self.device)
+            langs = pad_sequence(text_lang_tensor, batch_first=True, padding_value=0).to(self.device)
             assert text.shape[0] == batch
 
         # lens and mask
