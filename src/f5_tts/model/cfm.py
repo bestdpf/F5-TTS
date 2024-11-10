@@ -140,7 +140,7 @@ class CFM(nn.Module):
                                                         truncation=True,
                                                         add_special_tokens=False,
                                                         return_attention_mask=False)
-                        sub_phn = phn_output['input_ids']
+                        sub_phn = phn_output['input_ids'][0]
                         sub_lang = [lang_id] * len(sub_phn)
                         phn.extend(sub_phn)
                         lang.extend(sub_lang)
