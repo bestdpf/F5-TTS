@@ -150,7 +150,7 @@ class DiT(nn.Module):
 
         # t: conditioning time, c: context (text + masked cond audio), x: noised input audio
         t = self.time_embed(time)
-        text_embed = self.text_embed(text, seq_len, drop_text=drop_text)
+        text_embed = self.text_embed(text, lang, seq_len, drop_text=drop_text)
         x = self.input_embed(x, cond, text_embed, drop_audio_cond=drop_audio_cond)
 
         rope = self.rotary_embed.forward_from_seq_len(seq_len)

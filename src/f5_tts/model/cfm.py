@@ -121,31 +121,36 @@ class CFM(nn.Module):
             phns = []
             langs = []
             for cur_text in text:
-                lang_id, lang_locale = get_text_lang_locale(cur_text)
-                try:
-                    phn = run_phn(cur_text, lang_locale)
-                    # print(f'test phn {phn}')
-                except Exception as e:
-                    print(e)
-                    print(f'error phn {cur_text} {lang_id} {lang_locale}')
-                    phn = '[UNK]'
-                phns.append(phn)
-                langs.append(lang_id)
+                if isinstance(cur_text, str):
+                    cur_text = [cur_text]
+                if isinstance(cur_text, list):
+                    lang = []
+                    phn = []
+                    for sub_text in cur_text:
+                        lang_id, lang_locale = get_text_lang_locale(sub_text)
+                        try:
+                            sub_phn = run_phn(sub_text, lang_locale)
+                            # print(f'test phn {phn}')
+                        except Exception as e:
+                            print(e)
+                            print(f'error phn {sub_text} {lang_id} {lang_locale}')
+                            sub_phn = '[UNK]'
+                        phn_output = self.phn_tokenizer([sub_phn], max_length=MAX_TEXT_LEN,
+                                                        padding=False,
+                                                        truncation=True,
+                                                        add_special_tokens=False,
+                                                        return_attention_mask=False)
+                        sub_phn = phn_output['input_ids']
+                        sub_lang = [lang_id] * len(sub_phn)
+                        phn.extend(sub_phn)
+                        lang.extend(sub_lang)
+                    phn = torch.IntTensor(phn, device=device)
+                    lang = torch.IntTensor(lang, device=device)
+                    langs.append(lang)
+                    phns.append(phn)
 
-            phn_output = self.phn_tokenizer(phns, max_length=MAX_TEXT_LEN,
-                                       padding='longest',
-                                       truncation=True,
-                                       add_special_tokens=False,
-                                       return_attention_mask=False)
-            text = phn_output['input_ids']
-            text_lang_tensor = []
-            text_tensor = []
-            for idx, text_id in enumerate(text):
-                text_lang_tensor.append(torch.IntTensor([langs[idx]]*len(text_id)))
-                text_tensor.append(torch.IntTensor(text_id))
-
-            text = pad_sequence(text_tensor, batch_first=True, padding_value=0)
-            langs = pad_sequence(text_lang_tensor, batch_first=True, padding_value=0)
+            text = pad_sequence(phns, batch_first=True, padding_value=0)
+            langs = pad_sequence(langs, batch_first=True, padding_value=0)
             assert text.shape[0] == batch
 
         if exists(text):
@@ -266,13 +271,23 @@ class CFM(nn.Module):
                     print(e)
                     print(f'error phn {cur_text} {lang_id} {lang_locale}')
                     phn = '[UNK]'
-
                 phns.append(phn)
-            phn_output = self.phn_tokenizer(phns, return_tensors='pt', max_length=MAX_TEXT_LEN,
-                                       padding='longest',
-                                       truncation=True,
-                                       return_attention_mask=True)
-            text = phn_output['input_ids'].to(device)
+                langs.append(lang_id)
+
+            phn_output = self.phn_tokenizer(phns, max_length=MAX_TEXT_LEN,
+                                            padding=False,
+                                            truncation=True,
+                                            add_special_tokens=False,
+                                            return_attention_mask=False)
+            text = phn_output['input_ids']
+            text_lang_tensor = []
+            text_tensor = []
+            for idx, text_id in enumerate(text):
+                text_lang_tensor.append(torch.IntTensor([langs[idx]] * len(text_id)))
+                text_tensor.append(torch.IntTensor(text_id))
+
+            text = pad_sequence(text_tensor, batch_first=True, padding_value=0)
+            langs = pad_sequence(text_lang_tensor, batch_first=True, padding_value=0)
             assert text.shape[0] == batch
 
         # lens and mask
@@ -317,7 +332,7 @@ class CFM(nn.Module):
         # if want rigourously mask out padding, record in collate_fn in dataset.py, and pass in here
         # adding mask will use more memory, thus also need to adjust batchsampler with scaled down threshold for long sequences
         pred = self.transformer(
-            x=φ, cond=cond, text=text, time=time, drop_audio_cond=drop_audio_cond, drop_text=drop_text
+            x=φ, cond=cond, text=text, lang=langs, time=time, drop_audio_cond=drop_audio_cond, drop_text=drop_text
         )
 
         # flow matching loss
