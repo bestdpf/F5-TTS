@@ -86,7 +86,7 @@ class CFM(nn.Module):
     def sample(
         self,
         cond: float["b n d"] | float["b nw"],  # noqa: F722
-        text: int["b nt"] | list[str],  # noqa: F722
+        text: int["b nt"] | list[str] | list[list[str]],  # noqa: F722
         duration: int | int["b"],  # noqa: F821
         *,
         lens: int["b"] | None = None,  # noqa: F821
@@ -152,6 +152,7 @@ class CFM(nn.Module):
             text = pad_sequence(phns, batch_first=True, padding_value=0).to(self.device)
             langs = pad_sequence(langs, batch_first=True, padding_value=0).to(self.device)
             assert text.shape[0] == batch
+            assert  text.shape == langs.shape
 
         if exists(text):
             text_lens = (text != -1).sum(dim=-1)

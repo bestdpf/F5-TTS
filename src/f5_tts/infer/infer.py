@@ -107,7 +107,7 @@ def run_eval(model_dir, vcoder_dir, out_path, text, prompt_audio_path, prompt_te
     with torch.inference_mode():
         generated, _ = model.sample(
             cond=prompt_mel,
-            text=[prompt_text + " " + text],
+            text=[[prompt_text, text]],
             duration=duration,
             steps=nfe_step,
             cfg_strength=cfg_strength,
